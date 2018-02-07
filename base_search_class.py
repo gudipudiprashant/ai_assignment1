@@ -9,7 +9,11 @@ class SearchAlgo:
                       of the data to be optimized/selected
       obj_fn        - function object to be called with a single parameter - 
                       an unordered list of strings denoting the features, that
-                      evaluates the performance of the given strings.
+                      evaluates the performance of the model using only those
+                      features. 
+                      ** It is assumed that higher value from obj_fn implies
+                      better features, i.e., the Search Algorithm tries to 
+                      find the global maxima of the objective function. **
     """
     self.all_features = all_features
     self.obj_fn = obj_fn
@@ -48,9 +52,9 @@ class SearchAlgo:
         feature_list.append(feature)
     return feature_list
 
-  def getFitnessValue(self, enc_str):
+  def getScore(self, enc_str):
     """
-    Returns fitness value which signifies the performance of the encoded string
+    Returns value which signifies the performance of the encoded string.
     """
     feature_list = decodeFeatures(enc_str)
     return self.obj_fn(feature_list)
@@ -67,6 +71,9 @@ class A(SearchAlgo):
 t = A([1,2,3], 5)
 print(t.encodeFeatures([1, 2, 3]))
 print(t.encodeFeatures([]))
-print(t.decodeFeatures("010"))
-
-
+weighted_choices = [("A",1.5), ("B", 3), ("C",4.5)]
+import time,random
+t1 = time.time()
+for i in range(10**5):
+  random.random()
+print(time.time()-t1)
