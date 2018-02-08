@@ -45,6 +45,8 @@ class GeneticAlgo(SearchAlgo):
 
       population = new_population
 
+    return self.decodeFeatures(cur_best_chr)
+
   def get_random_chromosome(length):
     chrom = ""
     for i in range(length):
