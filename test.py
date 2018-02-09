@@ -10,15 +10,18 @@ print("Training data: " ,reg.X_train.shape)
 print("Testing data: ", reg.X_test.shape)
 obj_fn = reg.get_accuracy
 
-print("starting Simulated Annealing algorithm:")
-
-num_iters_obj = NumItersPerTempType("increasing", {'inc_iter': 200})
-wrapper = SimulatedAnnealingAlgo(all_features, obj_fn,
-                                start_temp=100, 
-                                num_iter_per_temp_fn=num_iters_obj)
-print("starting gentic algo")
+print("starting genetic algo")
 wrapper = GeneticAlgo(all_features, obj_fn)
 print(wrapper.run())
+# max_score = -1
+# best_str = ""
+# for i in range(0, 2**12):
+#     enc_str = "{0:011b}".format(i)
+#     sc = wrapper.getScore(enc_str)
+#     if sc > max_score:
+#         max_score = sc
+#         best_str = enc_str
+# print(best_str, max_score)
 # print(debug)
 # def f1(x,y,z):
 #     return x+y+z

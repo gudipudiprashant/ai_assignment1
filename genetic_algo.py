@@ -72,9 +72,6 @@ class GeneticAlgo(SearchAlgo):
 
       # Stop the algorithm if num of generations have exceeded num_gens set
       if generation >= self.num_gens:
-        print(cur_best_score)
-        print(cur_best_chrom)
-        print([val for val, _ in scores])
         break
 
       # Calculate Rank-based fitness values
