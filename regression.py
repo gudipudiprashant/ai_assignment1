@@ -3,7 +3,7 @@ import numpy as np
 
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression, LogisticRegression
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error, accuracy_score
 from sklearn.model_selection import train_test_split
 
 class Regression():
@@ -17,9 +17,11 @@ class Regression():
         return mean_squared_error(self.Y_test, 
             self.regr.predict(self.X_test[feature_list]))
 
-    def get_log_MSE(self, feature_list):
+    def get_accuracy(self, feature_list):
+        if len(feature_list) == 0:
+            return 0
         self.log_regr.fit(self.X_train[feature_list], self.Y_train)
-        return mean_squared_error(self.Y_test, 
+        return accuracy_score(self.Y_test, 
             self.log_regr.predict(self.X_test[feature_list]))
 
     def get_all_features(self):
@@ -30,8 +32,11 @@ class Regression():
 
     def preprocess_data(self):
 
-        data = self.dataset.dropna(axis=0, how='any')
-
+        # data = self.dataset.dropna(axis=0, how='any')
+        # Handle nan values by replacing them with mode
+        data = self.dataset.fillna(self.dataset.mode().iloc[0])
+        # print(data)
+        # Split data into train and test
         train, test = train_test_split(data, test_size=0.33, shuffle=False)
 
         self.X_train = train[train.columns[:-1]]
@@ -147,3 +152,4 @@ class Regression():
 
     def create_log_regr(self):
         self.log_regr = LogisticRegression()
+

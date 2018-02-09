@@ -56,7 +56,7 @@ class SearchAlgo:
     """
     Returns value which signifies the performance of the encoded string.
     """
-    feature_list = decodeFeatures(enc_str)
+    feature_list = self.decodeFeatures(enc_str)
     return self.obj_fn(feature_list)
 
 
@@ -68,12 +68,12 @@ class A(SearchAlgo):
   def print__(self):
     print(self.feature_list)
 
-t = A([1,2,3], 5)
-print(t.encodeFeatures([1, 2, 3]))
-print(t.encodeFeatures([]))
-weighted_choices = [("A",1.5), ("B", 3), ("C",4.5)]
-import time,random
-t1 = time.time()
-for i in range(10**5):
-  random.random()
-print(time.time()-t1)
+# t = A([1,2,3], 5)
+# print(t.encodeFeatures([1, 2, 3]))
+# print(t.encodeFeatures([]))
+# weighted_choices = [("A",1.5), ("B", 3), ("C",4.5)]
+# import time,random
+# t1 = time.time()
+# for i in range(10**5):
+#   random.random()
+# print(time.time()-t1)

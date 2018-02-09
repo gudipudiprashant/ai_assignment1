@@ -14,20 +14,20 @@ default_const_iters = 1
 default_inc_iters = 100
 
 class TemperatureDecrType:
-    self.dict_types = { 
-                        "linear": self.temp_decr_linear,
-                        "geometric": self.temp_decr_geometric,
-                        "slow_decrease": self.temp_decr_slow_decr
-                      }
 
-    self.type_fn = None
-    self.type_factor_dict = None
+    # self.type_fn = None
+    # self.type_factor_dict = None
 
 
     def __init__(self, type_name="linear", type_factor_dict={}):
-        self.type_fn = self.dict_types[type_name]
         self.type_factor_dict = type_factor_dict
-
+        self.dict_types = { 
+                            "linear": self.temp_decr_linear,
+                            "geometric": self.temp_decr_geometric,
+                            "slow_decrease": self.temp_decr_slow_decr
+                          }
+        self.type_fn = self.dict_types[type_name]
+        
     def get_new_temp(self, cur_temp):
         return self.type_fn(cur_temp)
 
@@ -50,17 +50,17 @@ class TemperatureDecrType:
 
 class NumItersPerTempType:
 
-    self.dict_types = {
-                        "constant": self.num_iters_constant,
-                        "increasing": self.num_iters_inc
-                      }
-
-    self.type_fn = None
-    self.type_factor_dict = None
+    # self.type_fn = None
+    # self.type_factor_dict = None
 
     def __init__(self, type_name="constant", type_factor_dict={}):
-        self.type_fn = self.dict_types[type_name]
         self.type_factor_dict = type_factor_dict
+        self.dict_types = {
+                            "constant": self.num_iters_constant,
+                            "increasing": self.num_iters_inc
+                          }
+        self.type_fn = self.dict_types[type_name]
+
 
     def get_num_iters(self, cur_temp):
         return self.type_fn(cur_temp)
@@ -75,22 +75,22 @@ class NumItersPerTempType:
     def num_iters_inc(self, cur_temp):
 
         inc_iter_factor = self.type_factor_dict.get('inc_iter', default_inc_iters)
-        return float(inc_num_iters_factor)/cur_temp
+        return int(inc_iter_factor/cur_temp)
 
 
 class SimulatedAnnealingAlgo(SearchAlgo):
 
     # Temperature parameters
-    self.start_temp = None
-    self.final_temp = None
-    self.num_iter_per_temp_fn = None
-    self.temp_decr_fn = None
+    # self.start_temp = None
+    # self.final_temp = None
+    # self.num_iter_per_temp_fn = None
+    # self.temp_decr_fn = None
 
 
-    # State variables of algorithm
-    self.cur_temp = None
-    self.cur_state = None
-    self.cur_state_score = None
+    # # State variables of algorithm
+    # self.cur_temp = None
+    # self.cur_state = None
+    # self.cur_state_score = None
 
     def __init__(self,
                  all_features,
@@ -100,13 +100,16 @@ class SimulatedAnnealingAlgo(SearchAlgo):
                  num_iter_per_temp_fn=NumItersPerTempType(),
                  temp_decr_fn=TemperatureDecrType()):
 
-        super(SimulatedAnnealing, self).__init__(all_features, obj_fn)
+        super(SimulatedAnnealingAlgo, self).__init__(all_features, obj_fn)
 
         self.start_temp = start_temp
         self.final_temp = final_temp
         self.temp_decr_fn = temp_decr_fn
         self.num_iter_per_temp_fn = num_iter_per_temp_fn
 
+        self.cur_temp = None
+        self.cur_state = None
+        self.cur_state_score = None
 
     def run(self):
 
@@ -133,7 +136,7 @@ class SimulatedAnnealingAlgo(SearchAlgo):
 
             self.cur_temp = self.temp_decr_fn.get_new_temp(self.cur_temp)
 
-        return self.cur_state
+        return self.cur_state, self.cur_state_score
 
 
     #Private Functions
@@ -159,9 +162,13 @@ class SimulatedAnnealingAlgo(SearchAlgo):
 
         current_state = self.cur_state
 
-        feature_to_flip = random.randint(0,len(current_state))
-        neighbour = current_state
-        neighbour[feature_to_flip] = str((int(current_state[feature_to_flip]) + 1) % 2)
+        feature_to_flip = random.randint(0,len(current_state)-1)
+        neighbour = ''
+        for i in range(len(current_state)):
+            if i == feature_to_flip:
+                neighbour += str((int(current_state[feature_to_flip]) + 1) % 2)
+            else:                
+                neighbour += current_state[i]
 
         return neighbour
 
