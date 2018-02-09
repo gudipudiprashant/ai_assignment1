@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
 
+from functools import lru_cache
+
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.metrics import mean_squared_error, accuracy_score
@@ -29,19 +31,20 @@ class Supervisor():
         else:
             self.create_log_regr()
 
-    def get_obj_fn(self, feature_list):
+    @lru_cache(maxsize=2**16)
+    def get_obj_fn(self, feature_tup):
         """
         Returns -ve of MSE or Accuracy based on is_reg_flag
 
         Args:
-        feature_list: List of features
+        feature_tup: Tuple of features instead of list for caching
 
         Returns -ve of Mean Squared Error for the given feature list.
         This allows us to maximize this objective function like accuracy.
         (Or)
         Returns accuracy.
         """
-        
+        feature_list = list(feature_tup)
         if self.reg_flag:
             return (-1)*self.get_MSE(feature_list)
         else:

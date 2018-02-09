@@ -55,9 +55,14 @@ class SearchAlgo:
   def getScore(self, enc_str):
     """
     Returns value which signifies the performance of the encoded string.
+    Args:
+      enc_str   : (str) denoting a state/solution or in this case a feature
+                  subset
+    Returns:
+      (int) Objective Function value of the feature subset
     """
-    feature_list = self.decodeFeatures(enc_str)
-    return self.obj_fn(feature_list)
+    feature_tup = tuple(self.decodeFeatures(enc_str))
+    return self.obj_fn(feature_tup)
 
 
 ####### Testing ########33

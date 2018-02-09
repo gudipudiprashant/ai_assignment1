@@ -51,8 +51,9 @@ class GeneticAlgo(SearchAlgo):
     all the generations.
 
     Returns:
-      Python list of feature names, corresponding to the best state/
-      solution found by the GA search algorithm.
+      2-tup of (Python list of feature names, corresponding to the best 
+      state/ solution found by the GA search algorithm,
+       obj_fn value of the feature subset).
     """
     cur_best_chrom = ""
     cur_best_score = -INF
@@ -69,6 +70,7 @@ class GeneticAlgo(SearchAlgo):
         if score > cur_best_score:
           cur_best_chrom = chromosome
           cur_best_score = score
+      print("Generation: ", generation, "Current best val: ", cur_best_score)
 
       # Stop the algorithm if num of generations have exceeded num_gens set
       if generation >= self.num_gens:
@@ -99,7 +101,7 @@ class GeneticAlgo(SearchAlgo):
       population = new_population
 
     # Return the best seen solution/chromosome
-    return self.decodeFeatures(cur_best_chrom)
+    return (self.decodeFeatures(cur_best_chrom), cur_best_score)
 
   def get_random_chromosome(self, chrom_length):
     """
