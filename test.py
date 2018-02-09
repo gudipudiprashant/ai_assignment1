@@ -1,9 +1,9 @@
-
-from regression import Regression
 from genetic_algo import GeneticAlgo, debug
+from regression import Supervisor
+from genetic_algo import GeneticAlgo
 from simulated_annealing import SimulatedAnnealingAlgo, NumItersPerTempType
 
-reg = Regression("train.csv")
+reg = Supervisor("train.csv")
 reg.preprocess_data()
 all_features = reg.get_all_features()
 print("Training data: " ,reg.X_train.shape)
