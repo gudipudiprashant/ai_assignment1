@@ -48,8 +48,7 @@ NUM_ITERS_TYPE = "constant"
 NUM_ITERS_FACTORS = {'constant': 1}
 
 # Simulated annealing parameters
-
-START_TEMP = 2500
+START_TEMP = 2000
 FINAL_TEMP = 0
 
 #Constant to tune the probability of accepting a worse solution.
