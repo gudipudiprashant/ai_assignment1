@@ -226,6 +226,6 @@ class GeneticAlgo(SearchAlgo):
     plt.plot(x,y, "ro")
     plt.xlabel("Generations")
     plt.ylabel("Best score found")
-    plt.title("Geneticc Algo")
+    plt.title("Genetic Algo")
     plt.legend()
     plt.show()

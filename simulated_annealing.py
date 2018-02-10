@@ -2,18 +2,22 @@ import random
 import math
 
 from base_search_class import SearchAlgo
+import config
 
 
 # Temperature decrease hyper-parameters
-DEFAULT_LIN_TEMP_DECR = 1 
-DEFAULT_GEOM_TEMP_DECR = 0.9
-DEFAULT_SLOW_DECR_TEMP_DECR = 2
+DEFAULT_LIN_COOLING = 1 
+DEFAULT_GEOM_COOLING = 0.9
+DEFAULT_SLOW_COOLING = 2
 
 #Number of Iterations hyper-parameters
 DEFAULT_CONST_ITERS = 1
 DEFAULT_INC_ITERS = 100
 
-class TemperatureDecrType:
+#Simulated annealing hyper-parameters
+ACCEPTANCE_PARAMETER = config.ACCEPT_PROBABILITY_FACTOR
+
+class CoolingType:
     """
     Describes how temperature decreases with the number of steps
     completed in the algorithm.
@@ -31,9 +35,9 @@ class TemperatureDecrType:
 
         # Shows the types of functions available
         self.dict_types = { 
-                           "linear": self.temp_decr_linear,
-                           "geometric": self.temp_decr_geometric,
-                           "slow_decrease": self.temp_decr_slow_decr
+                           "linear": self.cooling_linear,
+                           "geometric": self.cooling_geometric,
+                           "slow_decrease": self.cooling_slow_decr
                           }
         
         self.type_fn = self.dict_types[type_name]
@@ -54,7 +58,7 @@ class TemperatureDecrType:
 
     ## Private Functions
 
-    def temp_decr_linear(self, cur_temp):
+    def cooling_linear(self, cur_temp):
         """
         Linear temperature decrease.
 
@@ -64,11 +68,11 @@ class TemperatureDecrType:
         Returns new temperature
         """
 
-        lin_temp_decr = self.type_factor_dict.get('lin_decr',
-                                                  DEFAULT_LIN_TEMP_DECR)
-        return cur_temp - lin_temp_decr
+        lin_cooling = self.type_factor_dict.get('lin_cooling',
+                                                  DEFAULT_LIN_COOLING)
+        return cur_temp - lin_cooling
 
-    def temp_decr_geometric(self, cur_temp):
+    def cooling_geometric(self, cur_temp):
         """
         Geometric temperature decrease.
 
@@ -78,11 +82,11 @@ class TemperatureDecrType:
         Returns new temperature
         """
 
-        geom_temp_decr = self.type_factor_dict.get('geom_decr',
-                                                    DEFAULT_GEOM_TEMP_DECR)
-        return cur_temp*geom_temp_decr
+        geom_cooling = self.type_factor_dict.get('geom_cooling',
+                                                    DEFAULT_GEOM_COOLING)
+        return cur_temp*geom_cooling
 
-    def temp_decr_slow_decr(self, cur_temp):
+    def cooling_slow_decr(self, cur_temp):
         """
         Slow temperature decrease. Usually paired with 1 iteration
         per temperature. The motivation is to keep the number of
@@ -95,8 +99,8 @@ class TemperatureDecrType:
         Returns new temperature
         """
 
-        slow_decr_temp_factor = self.type_factor_dict.get('slow_decr', DEFAULT_SLOW_DECR_TEMP_DECR)
-        return float(cur_temp) / (1 + (float(1)/(slow_decr_temp_factor*cur_temp)))
+        slow_cooling = self.type_factor_dict.get('slow_cooling', DEFAULT_SLOW_COOLING)
+        return float(cur_temp) / (1 + (float(1)/(slow_cooling*cur_temp)))
 
 class NumItersPerTempType:
     """
@@ -175,7 +179,7 @@ class SimulatedAnnealingAlgo(SearchAlgo):
 
     def __init__(self, all_features, obj_fn, start_temp=100, final_temp=0,
                  num_iter_per_temp_fn=NumItersPerTempType(),
-                 temp_decr_fn=TemperatureDecrType()):
+                 cooling_fn=CoolingType()):
         """
         Initialize the algorithm object.
 
@@ -185,7 +189,7 @@ class SimulatedAnnealingAlgo(SearchAlgo):
         start_temp          :  Starting temperature
         final_temp          :  Stopping temperature
         num_iter_per_temp_fn:  NumItersPerTempType object
-        temp_decr_fn        :  TemperatureDecrType object
+        cooling_fn          :  CoolingType object
         """
 
         super(SimulatedAnnealingAlgo, self).__init__(all_features, obj_fn)
@@ -193,7 +197,7 @@ class SimulatedAnnealingAlgo(SearchAlgo):
         # Temperature parameters
         self.start_temp = start_temp
         self.final_temp = final_temp
-        self.temp_decr_fn = temp_decr_fn
+        self.cooling_fn = cooling_fn
         self.num_iter_per_temp_fn = num_iter_per_temp_fn
 
         # Variables for the algorithm
@@ -211,7 +215,16 @@ class SimulatedAnnealingAlgo(SearchAlgo):
         self.initialize()
 
         # Loop executes till final_temp reached.
+        self.energy_list = []
+        self.temp_list = []
+        self.best_energy_temp = -10
+        self.best_energy = -1000
+        self.best_energy_state = None
+
         while(True):
+            # print("At temperature ", self.cur_temp,
+            #       ", Current Energy: ", self.cur_state_energy,
+            #       " Best Energy: ", self.best_energy)
 
             if self.cur_temp <= self.final_temp:
                 break
@@ -232,14 +245,40 @@ class SimulatedAnnealingAlgo(SearchAlgo):
                     energy_diff = neighbour_state_energy - self.cur_state_energy
                     
                     # Jump to neighbouring state with probability.
-                    if random.random() < math.exp(float(energy_diff)/self.cur_temp):
+                    if random.random() < math.exp(float(energy_diff)/(ACCEPTANCE_PARAMETER*self.cur_temp)):
                         self.cur_state = neighbour_state
                         self.cur_state_energy = neighbour_state_energy
 
-            self.cur_temp = self.temp_decr_fn.get_new_temp(self.cur_temp)
+                #Get the best energy state
+                if self.cur_state_energy > self.best_energy:
+                    self.best_energy_temp = self.cur_temp
+                    self.best_energy = self.cur_state_energy
+                    self.best_energy_state = self.cur_state
+
+            if neighbour_state_energy > -0.1:
+                self.energy_list.append(self.cur_state_energy)
+                self.temp_list.append(self.cur_temp)
+
+            self.cur_temp = self.cooling_fn.get_new_temp(self.cur_temp)
+
+        print("Ans: ",self.cur_state_energy)
+        print("Best: ", self.best_energy, self.best_energy_temp)
 
         return self.decodeFeatures(self.cur_state), self.cur_state_energy
 
+    def get_graph(self):
+        """
+        Prints the graph
+        """
+        import matplotlib.pyplot as plt
+        x = self.temp_list
+        y = self.energy_list
+        plt.plot(x,y)
+        plt.xlabel("<-- Temperature")
+        plt.ylabel("Final energy value of state")
+        plt.title("Simulated Annealing Algo")
+        plt.legend()
+        plt.show()
 
     #Private Functions
 

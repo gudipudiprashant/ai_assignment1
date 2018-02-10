@@ -4,7 +4,7 @@ import config
 
 from genetic_algo import GeneticAlgo
 from regression import Supervisor
-from simulated_annealing import SimulatedAnnealingAlgo, NumItersPerTempType
+from simulated_annealing import SimulatedAnnealingAlgo, NumItersPerTempType, CoolingType
 
 
 def main():
@@ -27,7 +27,14 @@ def main():
         wrapper = GeneticAlgo(all_features, obj_fn)
     else:
         print("Starting Simulated Annealing")
-        wrapper = SimulatedAnnealingAlgo(all_features, obj_fn) 
+        cooling_fn = CoolingType(config.COOLING_TYPE, config.COOLING_FACTORS)
+        num_iters_fn = NumItersPerTempType(config.NUM_ITERS_TYPE,
+                                           config.NUM_ITERS_FACTORS)
+        wrapper = SimulatedAnnealingAlgo(all_features, obj_fn,
+                                         start_temp=config.START_TEMP,
+                                         final_temp=config.FINAL_TEMP,
+                                         num_iter_per_temp_fn=num_iters_fn,
+                                         cooling_fn=cooling_fn) 
 
     # Runs the search algorithm and returns the best solution found
     feature_subset = wrapper.run()[0]

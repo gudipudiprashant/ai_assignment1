@@ -7,7 +7,7 @@ train_file = "train_house_price.csv"
 is_regr = True
 
 # Use Genetic Search or Simulated Annealing?
-is_gen = True
+is_gen = False
 
 # Find the optimal solution using brute force search
 # Warning: Only recommended for small search space
@@ -32,3 +32,18 @@ POP_CONST = 10
 
 
 # SIMULATED ANNEALING : HYPER-PARAMETERS
+
+#Options: linear, geometric, slow_decrease
+COOLING_TYPE = "slow_decrease"
+#Options: lin_cooling, geom_cooling, slow_cooling
+COOLING_FACTORS = {'slow_cooling': 10}
+
+#Options: constant, increasing
+NUM_ITERS_TYPE = "constant"
+#Options: const_iter, inc_iter
+NUM_ITERS_FACTORS = {'constant': 1}
+
+START_TEMP = 2500
+FINAL_TEMP = 0
+
+ACCEPT_PROBABILITY_FACTOR = 0.000001
