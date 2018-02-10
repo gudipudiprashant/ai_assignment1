@@ -13,9 +13,7 @@ The python implementation of feature selection using Genetic Algorithm and Simul
 >>> python3 test.py
 ```
 
-To run the script with necessary parameters (dataset, printing graph, genetic/simulate annealing), you need to change the variables in `config.py`.
-
-The file config.py contains Input parameters and the hyperparameters for both the algorithms, which can be adjusted.
+To run the script with necessary parameters (dataset, printing graph, genetic/simulate annealing), you need to change the variables in `config.py`. It contains input parameters and the hyperparameters for both the algorithms.
 
 The following input parameters can be set in `config.py`
 
