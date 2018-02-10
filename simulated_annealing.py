@@ -221,10 +221,13 @@ class SimulatedAnnealingAlgo(SearchAlgo):
         self.best_energy = -1000
         self.best_energy_state = None
 
+        counter = 0
         while(True):
-            # print("At temperature ", self.cur_temp,
-            #       ", Current Energy: ", self.cur_state_energy,
-            #       " Best Energy: ", self.best_energy)
+            if counter % 500 == 0:
+                print("At temperature ", self.cur_temp,
+                      ", Current Energy: ", self.cur_state_energy,
+                      " Best Energy: ", self.best_energy)
+            counter += 1
 
             if self.cur_temp <= self.final_temp:
                 break
@@ -274,7 +277,8 @@ class SimulatedAnnealingAlgo(SearchAlgo):
         x = self.temp_list
         y = self.energy_list
         plt.plot(x,y)
-        plt.xlabel("<-- Temperature")
+        plt.gca().invert_xaxis()
+        plt.xlabel("Temperature")
         plt.ylabel("Final energy value of state")
         plt.title("Simulated Annealing Algo")
         plt.legend()

@@ -33,17 +33,24 @@ POP_CONST = 10
 
 # SIMULATED ANNEALING : HYPER-PARAMETERS
 
+# Cooling function parameters
+
 #Options: linear, geometric, slow_decrease
 COOLING_TYPE = "slow_decrease"
 #Options: lin_cooling, geom_cooling, slow_cooling
 COOLING_FACTORS = {'slow_cooling': 10}
+
+# Number of iterations per temperature parameters
 
 #Options: constant, increasing
 NUM_ITERS_TYPE = "constant"
 #Options: const_iter, inc_iter
 NUM_ITERS_FACTORS = {'constant': 1}
 
+# Simulated annealing parameters
+
 START_TEMP = 2500
 FINAL_TEMP = 0
 
+#Constant to tune the probability of accepting a worse solution.
 ACCEPT_PROBABILITY_FACTOR = 0.000001
