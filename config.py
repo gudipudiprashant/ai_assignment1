@@ -1,0 +1,34 @@
+# Config file to take input parameters and hyper-parameters
+
+# Input Training file(only csv)
+train_file = "train_house_price.csv"
+
+# Is the problem regression or classsification?
+is_regr = True
+
+# Use Genetic Search or Simulated Annealing?
+is_gen = True
+
+# Find the optimal solution using brute force search
+# Warning: Only recommended for small search space
+find_optim = False
+
+# Print graph of obj fn with each step
+print_graph = True
+
+
+# GENETIC ALGO : HYPER-PARAMETERS
+# Number of generations
+NUM_GENS = 30
+# k for Rank-based fitness calculation - should be between 1 and 2
+K = 1.5
+# (Float)Mutation rate constant. The actual mutation rate
+# will be 1/(mutation_const * length_chromosome)
+MUTATION = 1
+# Population constant
+# (Expected even number, else population changes between first and second gen)
+# population size = pop_const * num_features
+POP_CONST = 10
+
+
+# SIMULATED ANNEALING : HYPER-PARAMETERS

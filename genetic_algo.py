@@ -2,16 +2,13 @@ import bisect
 import itertools
 import random
 
+import config
+
 from base_search_class import SearchAlgo
 
 INF = float("Inf")
-# Hyper-parameters
-NUM_GENS = 10
-K = 1.5
-MUTATION = 1
-INIT_POP_CONST = 10
+# debug = {"mut":0, "non":0}
 
-debug = {"mut":0, "non":0}
 class GeneticAlgo(SearchAlgo):
   """
   Class that implements Genetic Search Algorithm for Feature Selection.
@@ -19,8 +16,8 @@ class GeneticAlgo(SearchAlgo):
   The Genetic Algorithm is a heuristic optimization method
   inspired by the principles of natural evolution.
   """
-  def __init__(self, all_features, obj_fn, num_gens=NUM_GENS, k=K,
-    mutation_const=MUTATION, pop_const=INIT_POP_CONST):
+  def __init__(self, all_features, obj_fn, num_gens=config.NUM_GENS, k=config.K,
+    mutation_const=config.MUTATION, pop_const=config.POP_CONST):
     """
     Constructor to create an object of the class.
     Args:
@@ -40,6 +37,7 @@ class GeneticAlgo(SearchAlgo):
     self.k = k
     self.mutation_const = mutation_const
     self.pop_const = pop_const
+    self.characteristics = {"avg_score":[], "best_score":[]}
     super(GeneticAlgo, self).__init__(all_features, obj_fn)
 
   def run(self):
@@ -64,6 +62,10 @@ class GeneticAlgo(SearchAlgo):
       generation += 1
       # Get the scores of each chromosome based on the objective function
       scores = [(self.getScore(chrom), chrom) for chrom in population]
+      
+      # Storing the average score of the generation
+      self.characteristics["avg_score"].append(
+        sum([score for score,chrom in scores])/len(population)) 
 
       # Update the best chromosome seen
       for score, chromosome in scores:
@@ -71,6 +73,8 @@ class GeneticAlgo(SearchAlgo):
           cur_best_chrom = chromosome
           cur_best_score = score
       print("Generation: ", generation, "Current best val: ", cur_best_score)
+      # Storing the current best score
+      self.characteristics["best_score"].append(cur_best_score)
 
       # Stop the algorithm if num of generations have exceeded num_gens set
       if generation >= self.num_gens:
@@ -212,4 +216,16 @@ class GeneticAlgo(SearchAlgo):
     return [self.get_random_chromosome(chrom_length) 
         for i in range(self.pop_const * chrom_length)]
 
-
+  def get_graph(self):
+    """
+    Prints the graph of keys in characteristics with respect to generation.
+    """
+    import matplotlib.pyplot as plt
+    x = [i for i in range(1, self.num_gens+1)]
+    y = self.characteristics["best_score"]
+    plt.plot(x,y, "ro")
+    plt.xlabel("Generations")
+    plt.ylabel("Best score found")
+    plt.title("Geneticc Algo")
+    plt.legend()
+    plt.show()

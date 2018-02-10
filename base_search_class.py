@@ -64,21 +64,3 @@ class SearchAlgo:
     feature_tup = tuple(self.decodeFeatures(enc_str))
     return self.obj_fn(feature_tup)
 
-
-####### Testing ########33
-class A(SearchAlgo):
-  def __init__(self, feature_list, obj_fn):
-    super(A, self).__init__(feature_list, obj_fn)
-
-  def print__(self):
-    print(self.feature_list)
-
-# t = A([1,2,3], 5)
-# print(t.encodeFeatures([1, 2, 3]))
-# print(t.encodeFeatures([]))
-# weighted_choices = [("A",1.5), ("B", 3), ("C",4.5)]
-# import time,random
-# t1 = time.time()
-# for i in range(10**5):
-#   random.random()
-# print(time.time()-t1)
