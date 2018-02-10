@@ -19,7 +19,7 @@ print_graph = True
 
 # GENETIC ALGO : HYPER-PARAMETERS
 # Number of generations
-NUM_GENS = 30
+NUM_GENS = 50
 # k for Rank-based fitness calculation - should be between 1 and 2
 K = 1.5
 # (Float)Mutation rate constant. The actual mutation rate
@@ -28,7 +28,7 @@ MUTATION = 1
 # Population constant
 # (Expected even number, else population changes between first and second gen)
 # population size = pop_const * num_features
-POP_CONST = 10
+POP_CONST = 4
 
 
 # SIMULATED ANNEALING : HYPER-PARAMETERS
@@ -48,7 +48,7 @@ NUM_ITERS_TYPE = "constant"
 NUM_ITERS_FACTORS = {'constant': 1}
 
 # Simulated annealing parameters
-START_TEMP = 200
+START_TEMP = 2000
 FINAL_TEMP = 0
 
 #Constant to tune the probability of accepting a worse solution.
