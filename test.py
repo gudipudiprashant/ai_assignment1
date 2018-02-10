@@ -40,8 +40,8 @@ def main():
     feature_subset = wrapper.run()[0]
     # printing the best found feature subset
     print("\nFeature subset: ", feature_subset)
-    print("\n Length of feature subset found: ", len(feature_subset),
-        "Length of all features: ", len(wrapper.all_features))
+    print("\nLength of feature subset found: ", len(feature_subset),
+        "\nLength of all features: ", len(wrapper.all_features))
     # Printing the score/obj fn value of using all the features 
     print("\nScore using all the features: ",
         obj_fn(tuple(wrapper.all_features)))

@@ -64,8 +64,14 @@ class GeneticAlgo(SearchAlgo):
       scores = [(self.getScore(chrom), chrom) for chrom in population]
       
       # Storing the average score of the generation
+      # Using temp as some of the points can be large anomalies
+      # due to having only useless features and can skew the graph 
+      temp = []
+      for score, chrom in scores:
+        if score > -10**3:
+          temp.append(score)
       self.characteristics["avg_score"].append(
-        sum([score for score,chrom in scores])/len(population)) 
+        sum(temp)/len(temp)) 
 
       # Update the best chromosome seen
       for score, chromosome in scores:
@@ -222,8 +228,8 @@ class GeneticAlgo(SearchAlgo):
     """
     import matplotlib.pyplot as plt
     x = [i for i in range(1, self.num_gens+1)]
-    y = self.characteristics["best_score"]
-    plt.plot(x,y, "ro")
+    plt.plot(x, self.characteristics["best_score"], "r--", label="Best score")
+    plt.plot(x, self.characteristics["avg_score"], "b^", label="Average score")
     plt.xlabel("Generations")
     plt.ylabel("Best score found")
     plt.title("Genetic Algo")
