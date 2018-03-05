@@ -132,6 +132,9 @@ class Supervisor():
         Returns MSE for the features list.
         """
 
+        if len(feature_list) == 0:
+            return 10**10
+
         self.model.fit(self.X_train[feature_list], self.Y_train)
         return mean_squared_error(self.Y_test, 
             self.model.predict(self.X_test[feature_list]))
